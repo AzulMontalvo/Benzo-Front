@@ -1,0 +1,135 @@
+/* Navbar.css */
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #3a6daa;
+    color: #fff;
+    padding: 10px 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.navbar-logo a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    /* margin-right: 30px; */
+}
+
+.navbar-brand {
+  color: white;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Navbar Left - Logo y menú hamburguesa */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  margin-right: 2%;
+}
+
+.navbar-center {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Permite que el buscador ocupe espacio */
+}
+
+.navbar-center-user {
+  display: flex;
+  align-items: center;
+}
+
+.search-form {
+  display: flex;
+  width: 100%; /* Ajusta el ancho del buscador */
+  max-width: 400px; /* Ancho máximo para el buscador */
+}
+
+.search-input {
+  border: 1px solid #555;
+  padding: 8px 12px;
+  border-radius: 50px 50px 50px 50px;
+  flex-grow: 1;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-button {
+  background-color: transparent;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: large;
+}
+
+.search-button:hover {
+  color:#218838;
+}
+
+.navbar-right {
+  position: relative;
+  margin-left: 20px; /* Espacio entre el buscador y el carrito */
+}
+
+.cart-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: x-large;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.cart-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 250px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.cart-dropdown h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.checkout-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+.checkout-button:hover {
+  background-color: #218838;
+}
