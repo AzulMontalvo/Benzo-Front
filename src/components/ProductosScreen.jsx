@@ -4,25 +4,15 @@ import '../ProductoScreen.css';
 // Datos de ejemplo - estos vendrán del backend
 const productosEjemplo = {
   "Burritos": [
-    { id: 1, nombre: "Burrito de Frijoles", precio: 35.00, descripcion: "Burrito con frijoles refritos y queso" },
-    { id: 2, nombre: "Burrito de Pollo", precio: 45.00, descripcion: "Burrito con pollo desmenuzado y verduras" },
-    { id: 3, nombre: "Burrito Mixto", precio: 50.00, descripcion: "Burrito con carne, pollo y frijoles" }
+    { id: 1, nombre: "Burrito de Frijoles", precio: 25.00, descripcion: "Burrito de frijoles con queso" },
+    { id: 2, nombre: "Burrito de Pollo en crema", precio: 25.00, descripcion: "Burrito de pollo desmenusado en crema" },
+    { id: 3, nombre: "Burrito de winie con chipotle", precio: 25.00, descripcion: "winie baniado en salsa chipotle" }
   ],
   "Refrescos y Bebidas": [
-    { id: 4, nombre: "Coca Cola", precio: 15.00, descripcion: "Refresco de cola 355ml" },
+    { id: 4, nombre: "Coca Cola", precio: 20.00, descripcion: "Refresco de cola 355ml" },
     { id: 5, nombre: "Agua Natural", precio: 10.00, descripcion: "Agua purificada 500ml" },
-    { id: 6, nombre: "Jugo de Naranja", precio: 20.00, descripcion: "Jugo natural de naranja 300ml" },
-    { id: 7, nombre: "Horchata", precio: 18.00, descripcion: "Horchata tradicional 400ml" }
-  ],
-  "Quesadillas": [
-    { id: 8, nombre: "Quesadilla Simple", precio: 25.00, descripcion: "Quesadilla con queso Oaxaca" },
-    { id: 9, nombre: "Quesadilla con Jamón", precio: 35.00, descripcion: "Quesadilla con jamón y queso" },
-    { id: 10, nombre: "Quesadilla Especial", precio: 40.00, descripcion: "Quesadilla con pollo y verduras" }
-  ],
-  "Postres": [
-    { id: 11, nombre: "Flan", precio: 25.00, descripcion: "Flan casero con caramelo" },
-    { id: 12, nombre: "Gelatina", precio: 15.00, descripcion: "Gelatina de diferentes sabores" },
-    { id: 13, nombre: "Pay de Queso", precio: 30.00, descripcion: "Rebanada de pay de queso con fresas" }
+    { id: 6, nombre: "Jugo Jumex Mango", precio: 18.00, descripcion: "Jugo jumex 300ml" },
+    { id: 7, nombre: "Arizona", precio: 20.00, descripcion: "juego arizona de sabor" }
   ]
 };
 
