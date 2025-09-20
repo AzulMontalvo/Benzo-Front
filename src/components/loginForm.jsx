@@ -100,6 +100,11 @@ const Login = () => {
                         <button>Iniciar Sesión</button>
                     </form>
                     <p>
+                        <span className="line">
+                            <Link to="/forgotpassword">Olvidé mi contraseña</Link>
+                        </span>
+                    </p>
+                    <p>
                         ¿Aun no tienes cuenta?<br />
                         <span className="line">
                             <Link to="/register">Regístrate</Link>

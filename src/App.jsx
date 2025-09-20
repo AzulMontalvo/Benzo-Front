@@ -5,6 +5,10 @@ import RegisterForm from './components/registerForm.jsx';
 import ProductosScreen from "./components/ProductosScreen.jsx";
 
 
+// export default function App() {
+//   return <Header />;
+// }
+
 function App() {
 
   return (
