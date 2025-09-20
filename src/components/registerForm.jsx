@@ -7,8 +7,8 @@ import axios from '../api/axios';
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
 const CTRL_REGEX = /^[0-9]{8}$/;
 //Cambiar la URL cuando se tenga el backend
-const REGISTER_URL = 'auth/register';
-const CONFIRM_URL = 'auth/confirm-email';
+const REGISTER_URL = '/Auth/register';
+const CONFIRM_URL = '/Account/confirm-email';
 
 const Register = () => {
     const userRef = useRef();
@@ -53,13 +53,13 @@ const Register = () => {
     }, [control, pwd, matchPwd])
 
     // Generar el email institucional cuando cambia el número de control
-    useEffect(() => {
-        if (control) {
-            setEmail(`L${control}@delicias.tecnm.mx`);
-        } else {
-            setEmail("");
-        }
-    }, [control]);
+    // useEffect(() => {
+    //     if (control) {
+    //         setEmail(`L${control}@delicias.tecnm.mx`);
+    //     } else {
+    //         setEmail("");
+    //     }
+    // }, [control]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -70,39 +70,39 @@ const Register = () => {
             return;
         }
 
-        console.log({ control, nombre, apellido, pwd });
-        setSuccess(true);
+        // console.log({ control, nombre, apellido, pwd });
+        // setSuccess(true);
 
-        // //HandleSubmit Function
-        // try {
-        //     const response = await axios.post(REGISTER_URL,
-        //         JSON.stringify({ num_Control: control, nombre: nombre, apellido: apellido, contraseña: pwd, email: email}),
-        //         {
-        //             headers: { 'Content-Type': 'application/json' },
-        //             withCredentials: true
-        //         }
-        //     );
-        //     console.log(response?.data);
-        //     console.log(response?.accessToken);
-        //     //console.log(JSON.stringify(response))
-        //     setSuccess(true);
-        //     //Limpiar Inputs
-        //     setControl('');
-        //     setNombre('');
-        //     setApellido('');
-        //     setPwd('');
-        //     setMatchPwd('');
-        //     setEmail('');
-        // } catch (err) {
-        //     if (!err?.response) {
-        //         setErrMsg('El servidor no responde. Intenta más tarde.');
-        //     // } else if (err.response?.status === 409) {
-        //     //     setErrMsg('Usuario ya registrado');
-        //     } else {
-        //         setErrMsg('El registro falló. Inténtelo de nuevo más tarde.');
-        //     }
-        //     errRef.current.focus();
-        // }
+        //HandleSubmit Function
+         try {
+             const response = await axios.post(REGISTER_URL,
+                 JSON.stringify({ numControl: control, nombre: nombre, apellido: apellido, password: pwd}),
+                 {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            console.log(response?.data);
+            console.log(response?.accessToken);
+            //console.log(JSON.stringify(response))
+            setSuccess(true);
+            //Limpiar Inputs
+            setControl('');
+            setNombre('');
+            setApellido('');
+            setPwd('');
+            setMatchPwd('');
+            // setEmail('');
+        } catch (err) {
+            if (!err?.response) {
+                setErrMsg('El servidor no responde. Intenta más tarde.');
+            // } else if (err.response?.status === 409) {
+            //     setErrMsg('Usuario ya registrado');
+            } else {
+                setErrMsg('El registro falló. Inténtelo de nuevo más tarde.');
+            }
+            errRef.current.focus();
+        }
     }
 
     return (

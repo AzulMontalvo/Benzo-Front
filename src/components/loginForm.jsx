@@ -5,7 +5,7 @@ import AuthContext from "../context/AuthProvider";
 import axios from '../api/axios';
 
 
-const LOGIN_URL = '/auth/login';
+const LOGIN_URL = '/Auth/login';
 
 const Login = () => {
     const { setAuth } = useContext(AuthContext);
@@ -29,38 +29,38 @@ const Login = () => {
         e.preventDefault();
 
         console.log({ control, pwd });
-        setSuccess(true);
+        // setSuccess(true);
 
         //setSuccess(false); //Reset success state on new submit
 
-        // try {
-        //     const response = await axios.post(LOGIN_URL,
-        //         JSON.stringify({num_Control: control, contraseña: pwd }),
-        //         {
-        //             headers: { 'Content-Type': 'application/json' },
-        //             withCredentials: true
-        //         }
-        //     );
-        //     console.log(JSON.stringify(response?.data));
-        //     //console.log(JSON.stringify(response));
-        //     const accessToken = response?.data?.accessToken;
-        //     const roles = response?.data?.roles;
-        //     setAuth({ control, pwd, roles, accessToken });
-        //     setControl('');
-        //     setPwd('');
-        //     setSuccess(true);
-        // } catch (err) {
-        //     if (!err?.response) {
-        //         setErrMsg('El servidor no responde. Intenta más tarde.');
-        //     } else if (err.response?.status === 400) {
-        //         setErrMsg('Credenciales inválidas');
-        //     } else if (err.response?.status === 401) {
-        //         setErrMsg('Unauthorized');
-        //     } else {
-        //         setErrMsg('El inicio de sesión falló.');
-        //     }
-        //     errRef.current.focus();
-        // }
+        try {
+            const response = await axios.post(LOGIN_URL,
+                JSON.stringify({numControl: control, password: pwd }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            console.log(JSON.stringify(response?.data));
+            //console.log(JSON.stringify(response));
+            const accessToken = response?.data?.accessToken;
+            const roles = response?.data?.roles;
+            setAuth({ control, pwd, roles, accessToken });
+            setControl('');
+            setPwd('');
+            setSuccess(true);
+        } catch (err) {
+            if (!err?.response) {
+                setErrMsg('El servidor no responde. Intenta más tarde.');
+            } else if (err.response?.status === 400) {
+                setErrMsg('Credenciales inválidas');
+            } else if (err.response?.status === 401) {
+                setErrMsg('Unauthorized');
+            } else {
+                setErrMsg('El inicio de sesión falló.');
+            }
+            errRef.current.focus();
+        }
     }
 
     return (
