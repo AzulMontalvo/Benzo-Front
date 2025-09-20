@@ -101,7 +101,7 @@ const Login = () => {
                     </form>
                     <p>
                         <span className="line">
-                            <Link to="/forgotpassword">¿Olvidaste tu contraseña?</Link>
+                            <Link to="/forgotpassword">Olvidé mi contraseña</Link>
                         </span>
                     </p>
                     <p>

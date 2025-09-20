@@ -79,7 +79,7 @@ const ForgotPassword = () => {
                         value={control}
                         required
                     />
-                    <button>Enviar Correo de Restablecimiento</button>
+                    <button>Enviar Correo de Reestablecimiento</button>
                     <p>
                         <span className="line">
                             <Link to="/login">Volver al Inicio de Sesión</Link>
