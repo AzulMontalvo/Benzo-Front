@@ -6,24 +6,26 @@ import ProductosScreen from "./components/ProductosScreen.jsx";
 import ForgotPassword from "./components/forgotPassword.jsx";
 import Header from "./components/header.jsx";
 import VerifyEmail from "./components/verifyEmail.jsx";
+import ResetPassword from "./components/resetPassword.jsx";
 
 
-export default function App() {
-  return <Header />;
-}
-
-// function App() {
-
-//   return (
-//     <Routes>
-//       <Route path="/" element={<LoginForm />} />
-//       <Route path="/login" element={<LoginForm />} />
-//       <Route path="/register" element={<RegisterForm />} />
-//       <Route path="/verify-email" element={<VerifyEmail />} />
-//       <Route path="/forgotpassword" element={<ForgotPassword />} />t
-//       <Route path="/productos" element={<ProductosScreen />} />
-//     </Routes>
-//   );
+// export default function App() {
+//   return <Header />;
 // }
 
-//  export default App;
+function App() {
+
+  return (
+    <Routes>
+      <Route path="/" element={<LoginForm />} />
+      <Route path="/login" element={<LoginForm />} />
+      <Route path="/register" element={<RegisterForm />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/forgotpassword" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/productos" element={<ProductosScreen />} />
+    </Routes>
+  );
+}
+
+ export default App;

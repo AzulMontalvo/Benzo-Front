@@ -1,7 +1,6 @@
 //registerForm.jsx
 import { useRef, useState, useEffect } from "react";
 import {Link} from "react-router-dom";
-//import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import axios from '../api/axios';
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,24}$/;
@@ -76,12 +75,14 @@ const Register = () => {
         //HandleSubmit Function
          try {
              const response = await axios.post(REGISTER_URL,
-                 JSON.stringify({ numControl: control, nombre: nombre, apellido: apellido, password: pwd}),
+                 JSON.stringify({ numControl: control, nombre, apellido, password: pwd}),
                  {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 }
             );
+
+            localStorage.setItem("numControl", control);
             console.log(response?.data);
             console.log(response?.accessToken);
             //console.log(JSON.stringify(response))
@@ -96,8 +97,8 @@ const Register = () => {
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('El servidor no responde. Intenta más tarde.');
-            // } else if (err.response?.status === 409) {
-            //     setErrMsg('Usuario ya registrado');
+            } else if (err.response?.status === 400) {
+                setErrMsg('Usuario ya registrado');
             } else {
                 setErrMsg('El registro falló. Inténtelo de nuevo más tarde.');
             }
@@ -110,7 +111,7 @@ const Register = () => {
             {success ? (
                 <section className="login-card" >
                     <h2>¡Registro Exitoso!</h2>
-                    <p>Se ha enviado un enlace de verificación a su correo institucional ({email}). Revise su bandeja de entrada.
+                    <p>Se ha enviado un enlace de verificación a su correo institucional. Si no encuentra el correo, revise su carpeta de spam.
                     </p>
                 </section>
             ) : (

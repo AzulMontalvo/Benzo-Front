@@ -8,7 +8,7 @@ import axios from '../api/axios';
 const LOGIN_URL = '/Auth/login';
 
 const Login = () => {
-    const { setAuth } = useContext(AuthContext);
+    //const { setAuth } = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
 
@@ -28,10 +28,10 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log({ control, pwd });
+        //console.log({ control, pwd });
         // setSuccess(true);
 
-        //setSuccess(false); //Reset success state on new submit
+        setSuccess(false); //Reset success state on new submit
 
         try {
             const response = await axios.post(LOGIN_URL,
@@ -45,7 +45,7 @@ const Login = () => {
             //console.log(JSON.stringify(response));
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-            setAuth({ control, pwd, roles, accessToken });
+            //setAuth({ control, pwd, roles, accessToken });
             setControl('');
             setPwd('');
             setSuccess(true);
@@ -70,7 +70,7 @@ const Login = () => {
                     <h2>Inicio de Sesión Exitoso</h2>
                     <br />
                     <p>
-                        <a href="#">Página principal</a>
+                        <a href="productos">Página principal</a>
                     </p>
                 </section>
             ) : (

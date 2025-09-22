@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from '../api/axios';
 
 // Cambiar la URL cuando se tenga el backend
-const FORGOT_PASSWORD_URL = '/auth/forgot-password';
+const FORGOT_PASSWORD_URL = '/Account/forgot-password';
 
 const ForgotPassword = () => {
     const controlRef = useRef();
@@ -24,22 +24,15 @@ const ForgotPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // const CTRL_REGEX = /^[0-9]{8}$/;
-        // if (!CTRL_REGEX.test(control)) {
-        //     setErrMsg('El número de control debe ser de 8 dígitos numéricos.');
-        //     return;
-        // }
-
         try {
-            // endpoint del backend
-            // const response = await axios.post(FORGOT_PASSWORD_URL,
-            //     JSON.stringify({ num_Control: control }),
-            //     {
-            //         headers: { 'Content-Type': 'application/json' },
-            //         withCredentials: true
-            //     }
-            // );
-            // console.log(response?.data);
+            const response = await axios.post(
+                FORGOT_PASSWORD_URL,
+                { numControl: control }, // 👈 el DTO espera NumControl
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true,
+                }
+            );
             setSuccess(true);
             setControl('');
         } catch (err) {
