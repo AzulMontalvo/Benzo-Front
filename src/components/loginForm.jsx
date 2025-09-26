@@ -49,13 +49,14 @@ const Login = () => {
             setControl('');
             setPwd('');
             setSuccess(true);
+            localStorage.setItem("usuario", JSON.stringify(response.data.usuario));
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('El servidor no responde. Intenta más tarde.');
             } else if (err.response?.status === 400) {
                 setErrMsg('Credenciales inválidas');
             } else if (err.response?.status === 401) {
-                setErrMsg('Unauthorized');
+                setErrMsg('Algo falló, verifica tus credenciales');
             } else {
                 setErrMsg('El inicio de sesión falló.');
             }

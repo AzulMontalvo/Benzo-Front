@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../ProductoScreen.css';
+import Header from './Header/header';
+import { useCart } from '../context/CartContext';
 
 // datos como ejemplo
 const productosEjemplo = {
@@ -60,9 +62,11 @@ const productosEjemplo = {
 
 const ProductosScreen = () => {
   const [productos, setProductos] = useState(productosEjemplo);
-  const [carrito, setCarrito] = useState([]);
+  //const [carrito, setCarrito] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imagenesLoading, setImagenesLoading] = useState({}); 
+
+  const {addToCart, cart} = useCart();
 
   // ===== CARGAR LA IMAGEN DESDE EL BACK =====
   const cargarImagenProducto = async (productoId) => {
@@ -147,20 +151,20 @@ const ProductosScreen = () => {
   };
 
   // Función para agregar al carrito
-  const agregarAlCarrito = (producto) => {
-    setCarrito(prev => {
-      const existente = prev.find(item => item.id === producto.id);
-      if (existente) {
-        return prev.map(item => 
-          item.id === producto.id 
-            ? { ...item, cantidad: item.cantidad + 1 }
-            : item
-        );
-      } else {
-        return [...prev, { ...producto, cantidad: 1 }];
-      }
-    });
-  };
+  // const agregarAlCarrito = (producto) => {
+  //   setCarrito(prev => {
+  //     const existente = prev.find(item => item.id === producto.id);
+  //     if (existente) {
+  //       return prev.map(item => 
+  //         item.id === producto.id 
+  //           ? { ...item, cantidad: item.cantidad + 1 }
+  //           : item
+  //       );
+  //     } else {
+  //       return [...prev, { ...producto, cantidad: 1 }];
+  //     }
+  //   });
+  // };
 
   useEffect(() => {
     cargarProductos();
@@ -210,7 +214,7 @@ const ProductosScreen = () => {
       <div className="producto-footer">
         <span className="producto-precio">${producto.precio.toFixed(2)}</span>
         <button
-          onClick={() => agregarAlCarrito(producto)}
+          onClick={() => addToCart(producto)}
           className="btn-agregar"
         >
           + Agregar al carrito
@@ -248,6 +252,7 @@ const ProductosScreen = () => {
       <div className="main-container">
         {/* Header de la sección */}
         <div className="header-seccion">
+          <Header />
           <h1 className="titulo-principal">MENU</h1>
         </div>
 
