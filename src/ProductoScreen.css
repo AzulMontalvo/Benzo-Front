@@ -89,7 +89,7 @@
   margin-bottom: 1.5rem;
   margin-top: 0;
   padding-bottom: 0.75rem;
-  border-bottom: 3px solid #007bff;
+  border-bottom: 3px solid #1D1E59;
   width: 100%;
   display: block;
 }
@@ -181,7 +181,7 @@
 }
 
 .btn-agregar {
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   border: none;
   padding: 0.5rem 0.75rem;

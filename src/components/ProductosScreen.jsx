@@ -3,105 +3,137 @@ import '../ProductoScreen.css';
 import Header from './Header/header';
 import { useCart } from '../context/CartContext';
 
-// datos como ejemplo
-const productosEjemplo = {
-  "Burritos": [
-    { 
-      id: 1, 
-      nombre: "Burrito de Frijoles", 
-      precio: 25.00, 
-      descripcion: "Burrito de frijoles con queso",
-      imageUrl: null // Se llenará desde la API
-    },
-    { 
-      id: 2, 
-      nombre: "Burrito de Pollo en crema", 
-      precio: 25.00, 
-      descripcion: "Burrito de pollo desmenusado en crema",
-      imageUrl: null // Se llenará desde la API
-    },
-    { 
-      id: 3, 
-      nombre: "Burrito de winie con chipotle", 
-      precio: 25.00, 
-      descripcion: "winie baniado en salsa chipotle",
-      imageUrl: null // Se llenará desde la API
-    }
-  ],
-  "Refrescos y Bebidas": [
-    { 
-      id: 4, 
-      nombre: "Coca Cola", 
-      precio: 20.00, 
-      descripcion: "Refresco de cola 355ml",
-      imageUrl: null // Se llenará desde la API
-    },
-    { 
-      id: 5, 
-      nombre: "Agua Natural", 
-      precio: 10.00, 
-      descripcion: "Agua purificada 500ml",
-      imageUrl: null // Se llenará desde la API
-    },
-    { 
-      id: 6, 
-      nombre: "Jugo Jumex Mango", 
-      precio: 18.00, 
-      descripcion: "Jugo jumex 300ml",
-      imageUrl: null // Se llenará desde la API
-    },
-    { 
-      id: 7, 
-      nombre: "Arizona", 
-      precio: 20.00, 
-      descripcion: "juego arizona de sabor",
-      imageUrl: null // Se llenará desde la API
-    }
-  ]
-};
-
 const ProductosScreen = () => {
-  const [productos, setProductos] = useState(productosEjemplo);
-  //const [carrito, setCarrito] = useState([]);
+  const [productos, setProductos] = useState({});
+  const [categorias, setCategorias] = useState({});
   const [loading, setLoading] = useState(false);
-  const [imagenesLoading, setImagenesLoading] = useState({}); 
+  const [imagenesLoading, setImagenesLoading] = useState({});
+  const [error, setError] = useState(null);
 
-  const {addToCart, cart} = useCart();
+  const { addToCart, cart } = useCart();
 
-  // ===== CARGAR LA IMAGEN DESDE EL BACK =====
+  // ===== FUNCIÓN PARA OBTENER EL TOKEN =====
+  const getAuthToken = () => {
+    return localStorage.getItem('token') || localStorage.getItem('authToken');
+  };
+
+  // ===== FUNCIÓN PARA CARGAR CATEGORÍAS DESDE EL BACKEND =====
+  const cargarCategorias = async () => {
+    try {
+      const token = getAuthToken();
+      
+      const response = await fetch('/api/categorias', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const categoriasData = await response.json();
+        
+        // Crear un mapa de ID -> Nombre de categoría
+        const categoriasMap = {};
+        categoriasData.forEach(cat => {
+          categoriasMap[cat.IdCategoria] = cat.NombreCategoria;
+        });
+        
+        setCategorias(categoriasMap);
+        return categoriasMap;
+      } else {
+        // Si no hay endpoint de categorías, usar valores por defecto
+        const categoriasDefault = {
+          1: 'Burritos',
+          2: 'Refrescos y Bebidas',
+          3: 'Antojitos',
+        };
+        setCategorias(categoriasDefault);
+        return categoriasDefault;
+      }
+      
+    } catch (error) {
+      console.warn('No se pudieron cargar categorías, usando valores por defecto:', error);
+      const categoriasDefault = {
+        1: 'Burritos',
+        2: 'Refrescos y Bebidas', 
+        3: 'Antojitos',
+      };
+      setCategorias(categoriasDefault);
+      return categoriasDefault;
+    }
+  };
+
+  // ===== FUNCIÓN PARA CARGAR PRODUCTOS DESDE EL BACKEND =====
+  const cargarProductosDesdeBackend = async (categoriasMap) => {
+    try {
+      const token = getAuthToken();
+      
+      const response = await fetch('/api/productos', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const productosData = await response.json();
+      
+      // Organizar productos por categoría usando el mapa de categorías
+      const productosOrganizados = {};
+      
+      productosData.forEach(producto => {
+        const categoria = categoriasMap[producto.IdCategoriaProducto] || 'Sin Categoría';
+        
+        if (!productosOrganizados[categoria]) {
+          productosOrganizados[categoria] = [];
+        }
+        
+        productosOrganizados[categoria].push({
+          id: producto.IdProducto,
+          nombre: producto.NombreProducto,
+          precio: producto.PrecioProducto,
+          descripcion: producto.DescripcionProducto || `${producto.NombreProducto} - Delicioso producto disponible`,
+          categoria: categoria,
+          idCategoria: producto.IdCategoriaProducto,
+          imageUrl: null // Se llenará después con las imágenes
+        });
+      });
+
+      return productosOrganizados;
+      
+    } catch (error) {
+      console.error('Error al cargar productos:', error);
+      throw error;
+    }
+  };
+
+  // ===== FUNCIÓN PARA CARGAR IMAGEN DESDE EL BACKEND =====
   const cargarImagenProducto = async (productoId) => {
     try {
       setImagenesLoading(prev => ({ ...prev, [productoId]: true }));
       
-      /* 
-      --------------DESCOMENTAR CUANDO ESTE LISTO PARA CONECTAR EL BACK---------------------
+      const token = getAuthToken();
       
       const response = await fetch(`/api/productos/${productoId}/imagen`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`, // Si usas autenticación
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
       });
       
       if (response.ok) {
-        // Si el backend devuelve la imagen como blob
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
         return imageUrl;
-        
-        // O si el backend devuelve solo la URL de la imagen
-        // const data = await response.json();
-        // return data.imageUrl;
       } else {
-        throw new Error('Error al cargar imagen');
+        console.warn(`No se pudo cargar imagen para producto ${productoId}`);
+        return null;
       }
-      =================================================================
-      */
-      
-      // SIMULACIÓN  : Tengo que borrar este estas lineas de la 100 a la 110 cuando tenga la api lista para cargar las imagenes.
-      await new Promise(resolve => setTimeout(resolve, 800));
-      return `https://via.placeholder.com/300x200/4a90e2/ffffff?text=Producto+${productoId}`;
       
     } catch (error) {
       console.error(`Error al cargar imagen del producto ${productoId}:`, error);
@@ -112,73 +144,71 @@ const ProductosScreen = () => {
   };
 
   // ===== FUNCIÓN PARA CARGAR TODAS LAS IMÁGENES =====
-  const cargarTodasLasImagenes = async () => {
-    const productosActualizados = { ...productos };
+  const cargarTodasLasImagenes = async (productosData) => {
+    const productosConImagenes = { ...productosData };
     
-    for (const [categoria, productosCategoria] of Object.entries(productosActualizados)) {
+    for (const [categoria, productosCategoria] of Object.entries(productosConImagenes)) {
       for (let i = 0; i < productosCategoria.length; i++) {
         const producto = productosCategoria[i];
-        if (!producto.imageUrl) { // Solo cargar si no tiene imagen
-          const imageUrl = await cargarImagenProducto(producto.id);
-          productosActualizados[categoria][i] = {
-            ...producto,
-            imageUrl: imageUrl
-          };
-        }
+        const imageUrl = await cargarImagenProducto(producto.id);
+        productosConImagenes[categoria][i] = {
+          ...producto,
+          imageUrl: imageUrl
+        };
       }
     }
     
-    setProductos(productosActualizados);
+    return productosConImagenes;
   };
 
-  // Función para inicializar productos y cargar imágenes del backend
-  const cargarProductos = async () => {
+  // ===== FUNCIÓN PRINCIPAL PARA CARGAR TODO =====
+  const inicializarDatos = async () => {
     setLoading(true);
+    setError(null);
+    
     try {
-   
+      // 1. Cargar categorías primero
+      console.log('Cargando categorías...');
+      const categoriasMap = await cargarCategorias();
       
-      // Establecemos los productos locales
-      setProductos(productosEjemplo);
+      // 2. Cargar productos usando las categorías
+      console.log('Cargando productos desde el backend...');
+      const productosData = await cargarProductosDesdeBackend(categoriasMap);
       
-      // Cargamos las imágenes desde el backend
-      await cargarTodasLasImagenes();
+      // 3. Establecer productos sin imágenes primero
+      setProductos(productosData);
+      
+      // 4. Cargar imágenes de manera asíncrona
+      console.log('Cargando imágenes de productos...');
+      const productosConImagenes = await cargarTodasLasImagenes(productosData);
+      
+      // 5. Actualizar con imágenes
+      setProductos(productosConImagenes);
+      
+      console.log('Productos cargados exitosamente:', productosConImagenes);
       
     } catch (error) {
-      console.error('Error al cargar imágenes:', error);
+      console.error('Error al inicializar datos:', error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para agregar al carrito
-  // const agregarAlCarrito = (producto) => {
-  //   setCarrito(prev => {
-  //     const existente = prev.find(item => item.id === producto.id);
-  //     if (existente) {
-  //       return prev.map(item => 
-  //         item.id === producto.id 
-  //           ? { ...item, cantidad: item.cantidad + 1 }
-  //           : item
-  //       );
-  //     } else {
-  //       return [...prev, { ...producto, cantidad: 1 }];
-  //     }
-  //   });
-  // };
-
+  // ===== EFECTO PARA CARGAR DATOS AL MONTAR =====
   useEffect(() => {
-    cargarProductos();
+    inicializarDatos();
   }, []);
 
-  // Componente para cada producto individual
+  // ===== FUNCIÓN PARA REINTENTAR =====
+  const reintentar = () => {
+    inicializarDatos();
+  };
+
+  // ===== COMPONENTE PARA CADA PRODUCTO =====
   const ProductoCard = ({ producto }) => (
     <div className="producto-card">
       <div className="producto-imagen">
-        {/* 
-       
-        AQUÍ SE VA A MOSTRAR LA IMAGEN CARGADA DESDE EL BACKEND
-        
-        */}
         {imagenesLoading[producto.id] ? (
           <div className="imagen-loading">
             <div className="spinner-small"></div>
@@ -190,21 +220,19 @@ const ProductosScreen = () => {
             alt={producto.nombre}
             className="producto-img"
             onError={(e) => {
-              // Si hay error al cargar la imagen, mostrar placeholder
               e.target.style.display = 'none';
               e.target.nextSibling.style.display = 'block';
             }}
           />
         ) : null}
         
-        {/* Por si no se ve la imagen */}
         <span 
           className="placeholder-text"
           style={{ 
             display: (!producto.imageUrl || imagenesLoading[producto.id]) ? 'block' : 'none' 
           }}
         >
-          {imagenesLoading[producto.id] ? 'Cargando...' : 'Imagen del producto'}
+          {imagenesLoading[producto.id] ? 'Cargando...' : 'Sin imagen'}
         </span>
       </div>
       
@@ -217,13 +245,13 @@ const ProductosScreen = () => {
           onClick={() => addToCart(producto)}
           className="btn-agregar"
         >
-          + Agregar al carrito
+          🛒 Agregar al carrito
         </button>
       </div>
     </div>
   );
 
-  // Componentes 
+  // ===== COMPONENTE PARA CADA CATEGORÍA =====
   const CategoriaSeccion = ({ categoria, productos }) => (
     <div className="categoria-seccion">
       <h2 className="categoria-titulo">{categoria}</h2>
@@ -235,37 +263,81 @@ const ProductosScreen = () => {
     </div>
   );
 
-  if (loading) {
+  // ===== PANTALLA DE ERROR =====
+  if (error) {
     return (
-      <div className="loading-container">
-        <div className="loading-content">
-          <div className="spinner"></div>
-          <p>Cargando imágenes...</p>
+      <div className="productos-screen">
+        <div className="main-container">
+          <Header />
+          <div className="error-container">
+            <div className="error-content">
+              <h2>❌ Error al cargar productos</h2>
+              <p>{error}</p>
+              <div className="error-details">
+                <small>
+                  Verifica que:
+                  <br />• El backend esté funcionando
+                  <br />• Los endpoints /api/productos y /api/categorias estén disponibles
+                  <br />• El token de autenticación sea válido
+                </small>
+              </div>
+              <button onClick={reintentar} className="btn-reintentar">
+                🔄 Reintentar
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
+  // ===== PANTALLA DE CARGA =====
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-content">
+          <div className="spinner"></div>
+          <p>Cargando productos desde el servidor...</p>
+          <small>Esto puede tomar unos segundos...</small>
+        </div>
+      </div>
+    );
+  }
+
+  // ===== PANTALLA PRINCIPAL =====
   return (
     <div className="productos-screen">
-      {/* Contenedor principal */}
       <div className="main-container">
-        {/* Header de la sección */}
         <div className="header-seccion">
           <Header />
-          <h1 className="titulo-principal">MENU</h1>
+          <h1 className="titulo-principal">MENÚ</h1>
+          <div className="productos-info">
+            <p>
+              📋 Categorías: {Object.keys(productos).length} | 
+              🍽️ Productos: {Object.values(productos).reduce((total, cat) => total + cat.length, 0)}
+            </p>
+          </div>
         </div>
 
-    
-        {/* Secciones de productos por categoría */}
-        {Object.entries(productos).map(([categoria, productosCategoria]) => (
-          <CategoriaSeccion 
-            key={categoria} 
-            categoria={categoria} 
-            productos={productosCategoria} 
-          />
-        ))}
-
+        {/* Verificar si hay productos */}
+        {Object.keys(productos).length === 0 ? (
+          <div className="sin-productos">
+            <h3>🍽️ No hay productos disponibles</h3>
+            <p>No se encontraron productos en el servidor</p>
+            <button onClick={reintentar} className="btn-reintentar">
+              🔄 Recargar productos
+            </button>
+          </div>
+        ) : (
+          /* Secciones de productos por categoría */
+          Object.entries(productos).map(([categoria, productosCategoria]) => (
+            <CategoriaSeccion 
+              key={categoria} 
+              categoria={categoria} 
+              productos={productosCategoria} 
+            />
+          ))
+        )}
       </div>
     </div>
   );
