@@ -4,7 +4,6 @@ import LoginForm from './components/loginForm.jsx';
 import RegisterForm from './components/registerForm.jsx';
 import ProductosScreen from "./components/ProductosScreen.jsx";
 import ForgotPassword from "./components/forgotPassword.jsx";
-import Header from "./components/Header/header.jsx";
 import VerifyEmail from "./components/verifyEmail.jsx";
 import ResetPassword from "./components/resetPassword.jsx";
 import Checkout from "./components/checkout.jsx";
