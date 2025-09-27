@@ -12,10 +12,10 @@ export const CartProvider = ({ children }) => {
   //Agregar producto
     const addToCart = (producto) => {
     setCart(prev => {
-      const existente = prev.find(item => item.id === producto.id);
+      const existente = prev.find(item => item.idProducto === producto.idProducto);
       if (existente) {
         return prev.map(item =>
-          item.id === producto.id
+          item.idProducto === producto.idProducto
             ? { ...item, cantidad: item.cantidad + 1 }
             : item
         );
@@ -26,22 +26,22 @@ export const CartProvider = ({ children }) => {
   };
 
   //Remover producto
-  const removeFromCart = (productoId) => {
-    setCart((prev) => prev.filter((item) => item.id !== productoId));
+  const removeFromCart = (idProducto) => {
+    setCart((prev) => prev.filter((item) => item.idProducto !== idProducto));
   };
 
   //Incrementar cantidad
-  const addOne = (productoId) => {
+  const addOne = (idProducto) => {
     setCart(prev => prev.map(item =>
-      item.id === productoId ? { ...item, cantidad: item.cantidad + 1 } : item
+      item.idProducto === idProducto ? { ...item, cantidad: item.cantidad + 1 } : item
     ));
   };
 
   //Disminuir cantidad
-   const substractOne = (productoId) => {
+   const substractOne = (idProducto) => {
     setCart(prev =>
       prev.map(item =>
-        item.id === productoId
+        item.idProducto === idProducto
           ? { ...item, cantidad: item.cantidad - 1 }
           : item
       ).filter(item => item.cantidad > 0) // Qutar producto si la cantidad llega a 0
@@ -58,7 +58,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const getTotalPrecio = () => {
-    return carrito.reduce((total, item) => total + (item.cantidad * item.precio), 0);
+    return cart.reduce((total, item) => total + (item.cantidad * item.precioProducto), 0);
   };
 
 return (

@@ -71,7 +71,7 @@ const Login = () => {
                     <h2>Inicio de Sesión Exitoso</h2>
                     <br />
                     <p>
-                        <a href="productos">Página principal</a>
+                        <a href="/productos">Página principal</a>
                     </p>
                 </section>
             ) : (
