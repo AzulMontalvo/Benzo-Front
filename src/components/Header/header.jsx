@@ -7,7 +7,7 @@ import Cart from './cart.jsx';
 import UserInfo from './userInfo.jsx';
 import { useCart } from '../../context/CartContext.jsx';
 
-const Header = () => {
+const Header = ({searchTerm, setSearchTerm}) => {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const { getTotalItems } = useCart();
 
@@ -38,7 +38,7 @@ const Header = () => {
             
             <div className="navbar-container">
                 <div className="navbar-center">
-                    <SearchBar />
+                    <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
                 </div>
             </div>
         </nav>

@@ -1,7 +1,5 @@
-import { useState } from "react";
 
-const SearchBar = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+const SearchBar = ({searchTerm, setSearchTerm}) => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
