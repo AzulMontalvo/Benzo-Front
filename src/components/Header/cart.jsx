@@ -1,10 +1,21 @@
 import React from 'react';
 import '../../css/header.css';
-import { useCart } from '../../context/CartContext.jsx'; 
+import { useCart } from '../../context/CartContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
 
-    const { cart, addOne, substractOne, removeFromCart, clearCart, getTotalItems } = useCart();
+  const { cart, addOne, substractOne, removeFromCart, clearCart, getTotalItems } = useCart();
+
+  const navigate = useNavigate();
+
+  const handleCheckoutClick = () => {
+        navigate('/checkout');
+    };
+
+  const getTotalPrecio = () => {
+        return cart.reduce((total, item) => total + (item.cantidad * item.precio), 0);
+    };
 
   return (
     <div className="cart-dropdown">
@@ -20,7 +31,7 @@ const Cart = () => {
                 <button onClick={() => substractOne(item.id)} className="cart-item-btn-qty">-</button>
                 <span className="cart-item-quantity">{item.cantidad}</span>
                 <button onClick={() => addOne(item.id)} className="cart-item-btn-qty">+</button>
-                {/* <span className="cart-item-price">${(item.precio * item.cantidad).toFixed(2)}</span> */}
+                <span className="cart-item-price">${(item.precio * item.cantidad).toFixed(2)}</span>
                 <button onClick={() => removeFromCart(item.id)} className="cart-item-btn-remove">
                     <i class="bi bi-x-circle-fill"></i>
                 </button>
@@ -29,11 +40,13 @@ const Cart = () => {
           ))}
           <div className="cart-total">
             <span>Total:</span>
-            {/* <span>${getTotalPrecio().toFixed(2)}</span> */}
+            <span>${getTotalPrecio().toFixed(2)}</span>
           </div>
         </div>
       )}
-      <button className="checkout-button">Ordenar</button>
+      <button className="checkout-button" onClick={handleCheckoutClick} disabled={cart.length === 0}>
+        Ordenar
+        </button>
     </div>
   );
 };

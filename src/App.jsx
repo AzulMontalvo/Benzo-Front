@@ -7,6 +7,7 @@ import ForgotPassword from "./components/forgotPassword.jsx";
 import Header from "./components/Header/header.jsx";
 import VerifyEmail from "./components/verifyEmail.jsx";
 import ResetPassword from "./components/resetPassword.jsx";
+import Checkout from "./components/checkout.jsx";
 
 
 // export default function App() {
@@ -24,6 +25,7 @@ function App() {
       <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/productos" element={<ProductosScreen />} />
+      <Route path="/checkout" element={<Checkout />} />
     </Routes>
   );
 }

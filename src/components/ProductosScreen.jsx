@@ -9,9 +9,6 @@ const ProductosScreen = () => {
   const [loading, setLoading] = useState(false);
   const [imagenesLoading, setImagenesLoading] = useState({});
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [productosOriginales, setProductosOriginales] = useState({});
-
 
   const { addToCart, cart } = useCart();
 
@@ -179,7 +176,6 @@ const ProductosScreen = () => {
       const productosData = await cargarProductosDesdeBackend(categoriasMap);
       
       // 3. Establecer productos sin imágenes primero
-      setProductosOriginales(productosData);
       setProductos(productosData);
       
       // 4. Cargar imágenes de manera asíncrona
@@ -187,7 +183,6 @@ const ProductosScreen = () => {
       const productosConImagenes = await cargarTodasLasImagenes(productosData);
       
       // 5. Actualizar con imágenes
-      setProductosOriginales(productosConImagenes);
       setProductos(productosConImagenes);
       
       console.log('Productos cargados exitosamente:', productosConImagenes);
@@ -204,31 +199,6 @@ const ProductosScreen = () => {
   useEffect(() => {
     inicializarDatos();
   }, []);
-
-  // ===== EFECTO PARA FILTRAR PRODUCTOS CUANDO CAMBIA EL TÉRMINO DE BÚSQUEDA =====
-  useEffect(() => {
-    if (!searchTerm) {
-      setProductos(productosOriginales); // Si no hay término de búsqueda, mostrar todos
-      return;
-    }
-
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    const productosFiltrados = {};
-
-    Object.entries(productosOriginales).forEach(([categoria, listaProductos]) => {
-      const productosEnCategoriaFiltrados = listaProductos.filter(producto =>
-        producto.nombre.toLowerCase().includes(lowerCaseSearchTerm) ||
-        producto.descripcion.toLowerCase().includes(lowerCaseSearchTerm) ||
-        producto.categoria.toLowerCase().includes(lowerCaseSearchTerm)
-      );
-
-      if (productosEnCategoriaFiltrados.length > 0) {
-        productosFiltrados[categoria] = productosEnCategoriaFiltrados;
-      }
-    });
-
-    setProductos(productosFiltrados);
-  }, [searchTerm, productosOriginales]); // Depende del término de búsqueda y de los productos originales
 
   // ===== FUNCIÓN PARA REINTENTAR =====
   const reintentar = () => {
@@ -298,7 +268,7 @@ const ProductosScreen = () => {
     return (
       <div className="productos-screen">
         <div className="main-container">
-          <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+          <Header />
           <div className="error-container">
             <div className="error-content">
               <h2>❌ Error al cargar productos</h2>
@@ -339,7 +309,7 @@ const ProductosScreen = () => {
     <div className="productos-screen">
       <div className="main-container">
         <div className="header-seccion">
-          <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+          <Header />
           <h1 className="titulo-principal">MENÚ</h1>
           <div className="productos-info">
             <p>

@@ -1,3 +1,5 @@
+import axios from "../api/axios";
+//import { useCart } from "../context/CartContext";
 import { createContext, useContext, useState } from "react";
 
 //Crear el contexto
@@ -55,9 +57,9 @@ export const CartProvider = ({ children }) => {
     return cart.reduce((total, item) => total + item.cantidad, 0);
   };
 
-//   const getTotalPrecio = () => {
-//     return carrito.reduce((total, item) => total + (item.cantidad * item.precio), 0);
-//   };
+  const getTotalPrecio = () => {
+    return carrito.reduce((total, item) => total + (item.cantidad * item.precio), 0);
+  };
 
 return (
     <CartContext.Provider value={{
@@ -68,7 +70,7 @@ return (
       clearCart,
       substractOne,
       getTotalItems,
-    //   getTotalPrecio
+      getTotalPrecio
     }}>
       {children}
     </CartContext.Provider>
