@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../css/header.css';
 import { useCart } from '../../context/CartContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
@@ -33,7 +32,7 @@ const Cart = () => {
                 <button onClick={() => addOne(item.idProducto)} className="cart-item-btn-qty">+</button>
                 <span className="cart-item-price">${(item.precioProducto * item.cantidad).toFixed(2)}</span>
                 <button onClick={() => removeFromCart(item.idProducto)} className="cart-item-btn-remove">
-                    <i class="bi bi-dash-circle"></i>
+                    <i className="bi bi-dash-circle"></i>
                 </button>
               </div>
             </div>

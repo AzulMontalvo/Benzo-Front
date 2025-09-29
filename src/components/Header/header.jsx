@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useRef } from "react";
-import '../../css/header.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SearchBar from './searchBar.jsx';
 import Cart from './cart.jsx';
