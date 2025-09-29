@@ -43,13 +43,15 @@ const Login = () => {
             );
             console.log(JSON.stringify(response?.data));
             //console.log(JSON.stringify(response));
-            const accessToken = response?.data?.accessToken;
+            const token = response?.data?.token;
             const roles = response?.data?.roles;
             //setAuth({ control, pwd, roles, accessToken });
             setControl('');
             setPwd('');
             setSuccess(true);
             localStorage.setItem("usuario", JSON.stringify(response.data.usuario));
+            localStorage.setItem("accessToken", token)            
+            console.log("token guuardado  ", localStorage.getItem("accessToken"));
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('El servidor no responde. Intenta más tarde.');
