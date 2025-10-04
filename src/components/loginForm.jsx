@@ -45,24 +45,27 @@ const Login = () => {
             console.log(JSON.stringify(response?.data));
             //console.log(JSON.stringify(response));
             const token = response?.data?.token;
-            const rol = response?.data?.rol || [];
+            const rol = response?.data?.usuario?.rol || response?.data?.rol || "";
+            const usuario = response?.data?.usuario;
             //const roles = response?.data?.rol;
             //setAuth({ control, pwd, roles, accessToken });
-            setControl('');
-            setPwd('');
-            setSuccess(true);
+            
             localStorage.setItem("usuario", JSON.stringify(response.data.usuario));
             localStorage.setItem("accessToken", token)            
             //console.log("token guuardado  ", localStorage.getItem("accessToken"));
 
+            setControl('');
+            setPwd('');
+
             // 🔹 Redirigir según rol
-            if (rol.includes("Administrador")) {
-                navigate("/admin");
-            } else if (rol.includes("Empleado")) {
-                navigate("/empleado");
+            if (rol === "Administrador") {
+                navigate("/admin", { replace: true });
+            } else if (rol === "Empleado") {
+                navigate("/admin-panel", { replace: true });
             } else {
-                navigate("/productos"); // Cliente u otro rol
+                navigate("/productos", { replace: true }); // Cliente u otro rol
             }
+            setSuccess(true);
 
         } catch (err) {
             if (!err?.response) {
