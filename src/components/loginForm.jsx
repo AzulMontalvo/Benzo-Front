@@ -1,7 +1,7 @@
 //loginForm.jsx
 import { useRef, useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import AuthContext from "../context/AuthProvider";
+import { Link, useNavigate } from 'react-router-dom';
+//import AuthContext from "../context/AuthProvider";
 import axios from '../api/axios';
 
 
@@ -11,6 +11,7 @@ const Login = () => {
     //const { setAuth } = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
+    const navigate = useNavigate();
 
     const [control, setControl] = useState("");
     const [pwd, setPwd] = useState('');
@@ -44,14 +45,25 @@ const Login = () => {
             console.log(JSON.stringify(response?.data));
             //console.log(JSON.stringify(response));
             const token = response?.data?.token;
-            const roles = response?.data?.roles;
+            const rol = response?.data?.rol || [];
+            //const roles = response?.data?.rol;
             //setAuth({ control, pwd, roles, accessToken });
             setControl('');
             setPwd('');
             setSuccess(true);
             localStorage.setItem("usuario", JSON.stringify(response.data.usuario));
             localStorage.setItem("accessToken", token)            
-            console.log("token guuardado  ", localStorage.getItem("accessToken"));
+            //console.log("token guuardado  ", localStorage.getItem("accessToken"));
+
+            // 🔹 Redirigir según rol
+            if (rol.includes("Administrador")) {
+                navigate("/admin");
+            } else if (rol.includes("Empleado")) {
+                navigate("/empleado");
+            } else {
+                navigate("/productos"); // Cliente u otro rol
+            }
+
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('El servidor no responde. Intenta más tarde.');
@@ -67,16 +79,6 @@ const Login = () => {
     }
 
     return (
-        <>
-            {success ? (
-                <section className="login-card">
-                    <h2>Inicio de Sesión Exitoso</h2>
-                    <br />
-                    <p>
-                        <a href="/productos">Página principal</a>
-                    </p>
-                </section>
-            ) : (
                 <section className="login-card">
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
                     <h2>Iniciar Sesión</h2>
@@ -114,8 +116,6 @@ const Login = () => {
                         </span>
                     </p>
                 </section>
-            )}
-        </>
     )
 }
 
