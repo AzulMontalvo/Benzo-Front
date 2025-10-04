@@ -8,6 +8,24 @@
   align-items: center;
 }
 
+.cart-count {
+  border-radius: 50%;
+  background-color: #28a745;
+  color: white;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 .cart-dropdown {
   position: absolute;
   top: 100%;
@@ -30,7 +48,7 @@
   padding-bottom: 5px;
 }
 
-.checkout-button {
+/* .checkout-button {
   background-color: #28a745;
   color: white;
   border: none;
@@ -40,7 +58,7 @@
   cursor: pointer;
   margin-top: 15px;
   font-size: 16px;
-}
+} */
 
 .checkout-button:hover {
   background-color: #218838;
@@ -112,6 +130,7 @@
 
 .cart-item-btn-remove:hover {
   background-color: #c82333;
+  color: #ffffff;
 }
 
 .cart-item-quantity {
@@ -133,4 +152,67 @@
   font-weight: bold;
   padding-top: 15px;
   border-top: 1px solid #eee;
+}
+
+/* Contenedor de botones */
+.cart-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Botón de vaciar carrito - a la izquierda */
+.clear-cart-button {
+  padding: 12px 20px;
+  background-color: transparent;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.clear-cart-button:hover:not(:disabled) {
+  background-color: #da190b;
+  color: white;
+}
+
+.clear-cart-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Botón de ordenar - a la derecha */
+.checkout-button {
+  padding: 12px 20px;
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.checkout-button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.checkout-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Opcional: si los botones se ven mejor apilados en móviles */
+@media (max-width: 480px) {
+  .cart-buttons {
+    flex-direction: column;
+  }
 }

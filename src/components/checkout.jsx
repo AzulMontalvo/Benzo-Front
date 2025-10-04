@@ -127,7 +127,7 @@ const Checkout = () => {
             console.log('Pedido enviado con éxito:', response.data);
             alert('¡Tu pedido ha sido realizado con éxito!');
             clearCart();
-            navigate('/order-confirmed');
+            navigate('/status');
         } catch (error) {
             console.error('Error al enviar el pedido:', error);
             //alert('Hubo un error al procesar tu pedido. Inténtalo de nuevo.');

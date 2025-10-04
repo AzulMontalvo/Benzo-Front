@@ -86,9 +86,116 @@
   margin-left: 20px; /* Espacio entre el buscador y el carrito */
 }
 
-.user-info {
+/*------- User Info --------*/
+
+/* Contenedor del menú de usuario */
+.user-menu-container {
+  position: relative;
+}
+
+/* Botón principal con info del usuario */
+.user-info-button {
   color: #fff;
-    text-decoration: none;
-    font-size: 1.2em;
-    font-weight: bold;
+  background-color: transparent;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.2s ease;
+  border-radius: 8px;
+}
+
+.user-info-button:hover {
+  opacity: 0.8;
+}
+
+.user-info-button i {
+  font-size: 1.5em;
+  color: #fff;
+}
+
+.user-name {
+  color: #fff;
+  background-color: transparent;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+/* Menú desplegable */
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Items del menú */
+.user-dropdown-item {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+
+.user-dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.user-dropdown-item i {
+  font-size: 18px;
+}
+
+/* Estilo específico para cerrar sesión */
+.user-dropdown-item.logout {
+  color: #f44336;
+  border-top: 1px solid #eee;
+}
+
+.user-dropdown-item.logout:hover {
+  background-color: #ffebee;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .user-name {
+    display: none;
+  }
+  
+  .user-dropdown {
+    right: 0;
+    min-width: 180px;
+  }
 }

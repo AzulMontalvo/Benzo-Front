@@ -78,7 +78,7 @@ const VerifyEmail = () => {
             <h1>Verificación de Correo Electrónico</h1>
             {success ? (
                 <div>
-                    <p>¡Tu correo electrónico ha sido verificado exitosamente!</p>
+                    <p className="line">¡Tu correo electrónico ha sido verificado exitosamente!</p>
                     <Link to="/login">Inicia Sesión</Link>
                 </div>
             ) : (

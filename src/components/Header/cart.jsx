@@ -43,9 +43,14 @@ const Cart = () => {
           </div>
         </div>
       )}
-      <button className="checkout-button" onClick={handleCheckoutClick} disabled={cart.length === 0}>
-        Ordenar
+      <div className="cart-buttons">
+        <button className="clear-cart-button" onClick={clearCart} disabled={cart.length === 0}>
+          <i class="bi bi-trash3"></i>
         </button>
+        <button className="checkout-button" onClick={handleCheckoutClick} disabled={cart.length === 0}>
+          Ordenar
+        </button>
+      </div>
     </div>
   );
 };
