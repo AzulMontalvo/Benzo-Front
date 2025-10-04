@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
 
-  const { cart, addOne, substractOne, removeFromCart, clearCart, getTotalItems, getTotalPrecio } = useCart();
+  const { cart, addOne, substractOne, removeFromCart, clearCart, getTotalItems, getTotalPrecio, canAddMore, getRemainingSlots, MAX_PRODUCTOS } = useCart();
 
   const navigate = useNavigate();
 
@@ -19,6 +19,11 @@ const Cart = () => {
   return (
     <div className="cart-dropdown">
       <h3 className="cart-dropdown-title">Tu Carrito</h3>
+      {!canAddMore() && (
+        <div className="cart-full-alert">
+          🛑 Carrito lleno ({MAX_PRODUCTOS} productos máximo)
+        </div>
+      )}
       {cart.length === 0 ? (
         <p className="cart-empty-message">No hay productos en el carrito.</p>
       ) : (
@@ -29,7 +34,8 @@ const Cart = () => {
               <div className="cart-item-controls">
                 <button onClick={() => substractOne(item.idProducto)} className="cart-item-btn-qty">-</button>
                 <span className="cart-item-quantity">{item.cantidad}</span>
-                <button onClick={() => addOne(item.idProducto)} className="cart-item-btn-qty">+</button>
+                <button onClick={() => addOne(item.idProducto)} className="cart-item-btn-qty" disabled={!canAddMore()}
+                  title={!canAddMore() ? 'Carrito lleno' : 'Agregar uno más'}>+</button>
                 <span className="cart-item-price">${(item.precioProducto * item.cantidad).toFixed(2)}</span>
                 <button onClick={() => removeFromCart(item.idProducto)} className="cart-item-btn-remove">
                     <i className="bi bi-dash-circle"></i>
