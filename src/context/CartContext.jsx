@@ -5,21 +5,37 @@ import { createContext, useContext, useState } from "react";
 //Crear el contexto
 const CartContext = createContext();
 
+const MAX_PRODUCTOS = 10;
+
 //Crear el proveedor del contexto
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
+    // Función auxiliar para calcular el total de items
+  const calcularTotalItems = (carritoActual) => {
+    return carritoActual.reduce((total, item) => total + item.cantidad, 0);
+  };
+
   //Agregar producto
     const addToCart = (producto) => {
     setCart(prev => {
+      const totalActual = calcularTotalItems(prev);
       const existente = prev.find(item => item.idProducto === producto.idProducto);
       if (existente) {
+        if (totalActual >= MAX_PRODUCTOS) {
+          alert(`⚠️ Has alcanzado el límite de ${MAX_PRODUCTOS} productos en el carrito`);
+          return prev; // No hacer cambios
+        }
         return prev.map(item =>
           item.idProducto === producto.idProducto
             ? { ...item, cantidad: item.cantidad + 1 }
             : item
         );
       } else {
+        if (totalActual >= MAX_PRODUCTOS) {
+          alert(`⚠️ Has alcanzado el límite de ${MAX_PRODUCTOS} productos en el carrito`);
+          return prev; // No hacer cambios
+        }
         return [...prev, { ...producto, cantidad: 1 }];
       }
     });
@@ -61,6 +77,16 @@ export const CartProvider = ({ children }) => {
     return cart.reduce((total, item) => total + (item.cantidad * item.precioProducto), 0);
   };
 
+    // Verificar si se puede agregar más productos
+  const canAddMore = () => {
+    return calcularTotalItems(cart) < MAX_PRODUCTOS;
+  };
+
+  // Obtener productos restantes que se pueden agregar
+  const getRemainingSlots = () => {
+    return MAX_PRODUCTOS - calcularTotalItems(cart);
+  };
+
 return (
     <CartContext.Provider value={{
       cart,
@@ -70,7 +96,10 @@ return (
       clearCart,
       substractOne,
       getTotalItems,
-      getTotalPrecio
+      getTotalPrecio,
+      canAddMore,
+      getRemainingSlots,
+      MAX_PRODUCTOS
     }}>
       {children}
     </CartContext.Provider>
