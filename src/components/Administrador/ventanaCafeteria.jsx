@@ -3,41 +3,40 @@ import axios from "axios";
 import "../../css/cafeteria.css";
 
 const VistaCafeteria = () => {
-  const [estadoActivo, setEstadoActivo] = useState("PENDIENTE");
+  const [estadoActivo, setEstadoActivo] = useState("ENT"); // Cambiado de "REALIZADO" a "ENT"
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
 
-  // URL base del backend - AJUSTA AL PUERTO CORRECTO DE TU BACKEND
+  // URL base del backend
   const API_BASE_URL = "http://localhost:5265/api/orders";
 
   // Configurar axios para incluir el token en todas las peticiones
   const getAuthHeaders = () => {
     const token = localStorage.getItem("token");
     
-    // 🔍 DEBUG: Ver si existe el token
     console.log("🔑 Token guardado:", token ? "Sí existe" : "❌ NO EXISTE");
     
-    // Si no hay token, devolver headers vacíos (sin autenticación)
     if (!token) {
-      console.warn("⚠️ No hay token disponible - enviando petición sin autenticación");
+      console.warn("⚠️ No hay token disponible");
       return {};
     }
     
     return {
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
     };
   };
 
   // Mapeo de estados para mostrar nombres amigables
   const estadosConfig = {
-    PENDIENTE: { label: "Solicitado", className: "tab-solicitado" },
-    EN_PROCESO: { label: "En Proceso", className: "tab-proceso" },
-    REALIZADO: { label: "Entregado", className: "tab-entregado" },
-    RECHAZADO: { label: "Rechazado", className: "tab-rechazado" }
+    SOLI: { label: "Solicitado", className: "tab-solicitado" },
+    PROC: { label: "En Proceso", className: "tab-proceso" },
+    ENT: { label: "Entregado", className: "tab-entregado" },
+    RECH: { label: "Rechazado", className: "tab-rechazado" }
   };
 
   // Cargar pedidos desde el backend según el estado
@@ -48,37 +47,36 @@ const VistaCafeteria = () => {
       try {
         console.log("🔍 Consultando pedidos con estado:", estadoActivo);
         
-        // Opción 1: Como query parameter (actual)
-        const response = await axios.get(
-          `${API_BASE_URL}/estadosfiltrados`,
-          {
-            params: { claveEstado: estadoActivo },
-            ...getAuthHeaders()
-          }
-        );
+        // Enviar con el nombre correcto que espera el backend: "estado"
+        const url = `${API_BASE_URL}/estadosfiltrados?estado=${estadoActivo}`;
         
-        // Si falla, descomentar Opción 2 (pasarlo en la URL directamente)
-        // const response = await axios.get(
-        //   `${API_BASE_URL}/estadosfiltrados/${estadoActivo}`,
-        //   getAuthHeaders()
-        // );
+        console.log(" URL completa:", url);
+        console.log(" Headers:", getAuthHeaders());
         
-        console.log("✅ Pedidos recibidos:", response.data);
-        console.log("📊 Cantidad de pedidos:", response.data.length);
+        const response = await axios.get(url, getAuthHeaders());
+        
+        console.log("Pedidos recibidos:", response.data);
+        console.log("Cantidad de pedidos:", response.data.length);
         setPedidos(response.data);
       } catch (err) {
-        console.error("❌ Error al cargar pedidos:", err);
-        console.error("📍 URL intentada:", `${API_BASE_URL}/estadosfiltrados?claveEstado=${estadoActivo}`);
-        console.error("📦 Respuesta del servidor:", err.response?.data);
-        console.error("🔢 Código de estado:", err.response?.status);
+        console.error(" Error al cargar pedidos:", err);
+        console.error(" URL intentada:", `${API_BASE_URL}/estadosfiltrados?claveEstado=${estadoActivo}`);
+        console.error(" Respuesta del servidor:", err.response?.data);
+        console.error(" Código de estado:", err.response?.status);
+        console.error(" Detalles del error:", err.response?.data?.errors);
         
         // Manejo específico de errores
         if (err.code === 'ERR_NETWORK') {
-          setError("⚠️ No se puede conectar al servidor. Verifica que el backend esté corriendo en el puerto 5265");
+          setError(" No se puede conectar al servidor. Verifica que el backend esté corriendo en el puerto 5265");
         } else if (err.response?.status === 401) {
-          setError("🔒 No autorizado. Por favor inicia sesión nuevamente.");
+          setError(" Sesión expirada o no autorizado. Por favor inicia sesión nuevamente.");
+          // Opcional: Redirigir al login
+          // localStorage.removeItem("token");
+          // window.location.href = "/login";
         } else if (err.response?.status === 400) {
-          setError(`❌ Petición incorrecta: ${err.response?.data?.message || 'Verifica los parámetros'}`);
+          setError(` Petición incorrecta: ${err.response?.data?.message || 'Verifica los parámetros'}`);
+        } else if (err.response?.status === 404) {
+          setError(" Endpoint no encontrado. Verifica la URL del backend.");
         } else {
           setError(`Error al cargar los pedidos: ${err.message}`);
         }
@@ -93,7 +91,8 @@ const VistaCafeteria = () => {
   const cambiarEstado = async (idPedido, nuevoEstado) => {
     try {
       console.log(`🔄 Cambiando pedido ${idPedido} a estado ${nuevoEstado}`);
-      await axios.put(
+      
+      const response = await axios.put(
         `${API_BASE_URL}/cambiar-estado`,
         {
           idPedido: idPedido,
@@ -102,23 +101,34 @@ const VistaCafeteria = () => {
         getAuthHeaders()
       );
 
+      console.log(" Estado actualizado correctamente:", response.data);
+
       // Recargar pedidos después de actualizar
-      const response = await axios.get(
+      const pedidosResponse = await axios.get(
         `${API_BASE_URL}/estadosfiltrados`,
         {
           params: { claveEstado: estadoActivo },
           ...getAuthHeaders()
         }
       );
-      setPedidos(response.data);
+      
+      setPedidos(pedidosResponse.data);
       setPedidoSeleccionado(null);
-      console.log("✅ Estado actualizado correctamente");
+      
     } catch (err) {
-      console.error("❌ Error al cambiar estado:", err);
+      console.error(" Error al cambiar estado:", err);
+      
       if (err.response?.status === 401) {
-        alert("Sesión expirada. Por favor inicia sesión nuevamente.");
+        alert(" Sesión expirada. Por favor inicia sesión nuevamente.");
+        // Opcional: Redirigir al login
+        // localStorage.removeItem("token");
+        // window.location.href = "/login";
+      } else if (err.response?.status === 404) {
+        alert(" No se encontró el pedido o el endpoint.");
+      } else if (err.response?.status === 400) {
+        alert(` Error: ${err.response?.data?.message || 'Datos inválidos'}`);
       } else {
-        alert(`Error al cambiar el estado del pedido: ${err.message}`);
+        alert(` Error al cambiar el estado del pedido: ${err.message}`);
       }
     }
   };
@@ -164,7 +174,7 @@ const VistaCafeteria = () => {
         
         {!loading && !error && pedidos.length === 0 && (
           <p className="mensaje">
-            No hay pedidos en {estadosConfig[estadoActivo].label}
+            📦 No hay pedidos en {estadosConfig[estadoActivo].label}
           </p>
         )}
         
@@ -185,7 +195,7 @@ const VistaCafeteria = () => {
             </div>
             
             <div className="card-body">
-              <p><strong>Nombre:</strong> {pedido.usuario}</p>
+              <p><strong>Nombre:</strong> {pedido.usuario || 'No especificado'}</p>
               <p>
                 <strong>Hora Recogida:</strong> {formatearFecha(pedido.horaRecogida)}
               </p>
@@ -212,28 +222,29 @@ const VistaCafeteria = () => {
                   
                   {/* Botones de acción según el estado */}
                   <div className="acciones">
-                    {estadoActivo === "PENDIENTE" && (
+                    {estadoActivo === "SOLI" && (
                       <>
                         <button 
                           className="btn-aceptar"
-                          onClick={() => cambiarEstado(pedido.idPedido, "EN_PROCESO")}
+                          onClick={() => cambiarEstado(pedido.idPedido, "PROC")}
                         >
-                          Aceptar
+                          ✅ Aceptar
                         </button>
                         <button 
                           className="btn-rechazar"
-                          onClick={() => cambiarEstado(pedido.idPedido, "RECHAZADO")}
+                          onClick={() => cambiarEstado(pedido.idPedido, "RECH")}
                         >
-                          Rechazar
+                          ❌ Rechazar
                         </button>
                       </>
                     )}
-                    {estadoActivo === "EN_PROCESO" && (
+                    {estadoActivo === "PROC" && (
                       <button 
                         className="btn-finalizar"
-                        onClick={() => cambiarEstado(pedido.idPedido, "REALIZADO")}
+                        onClick={() => cambiarEstado(pedido.idPedido, "ENT")}
+                        title="Marcar como entregado"
                       >
-                        Finalizar
+                        ✓ Finalizar
                       </button>
                     )}
                   </div>
