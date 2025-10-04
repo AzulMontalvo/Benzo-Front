@@ -1,3 +1,4 @@
+//ProductosScreen.jsx
 import React, { useState, useEffect } from "react";
 import "../ProductoScreen.css";
 import Header from "./Header/header";
@@ -11,8 +12,6 @@ import { useCart } from "../context/CartContext";
 const ProductoCard = ({ producto, onAddToCart }) => (
   <div className="producto-card">
     <div className="producto-imagen">
-      {/* Tu lógica para cargar imágenes puede ir aquí.
-          Por ahora, un placeholder. */}
       {producto.imageUrl ? (
         <img
           src={producto.imageUrl}
@@ -24,7 +23,6 @@ const ProductoCard = ({ producto, onAddToCart }) => (
       )}
     </div>
 
-    {/* FIX 3: Usar los nombres de propiedad exactos de la API */}
     <h3 className="producto-nombre">{producto.nombreProducto}</h3>
     <p className="producto-descripcion">
       {producto.descripcion || "Sin descripción"}
@@ -50,7 +48,6 @@ const CategoriaSeccion = ({ categoria, productos, onAddToCart }) => (
     <div className="productos-grid">
       {productos.map((producto) => (
         <ProductoCard
-          // FIX 3: Usar 'idProducto' como key, que es único.
           key={producto.idProducto}
           producto={producto}
           onAddToCart={onAddToCart}
@@ -66,14 +63,12 @@ const ProductosScreen = () => {
   const [productosAgrupados, setProductosAgrupados] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // Estado para la búsqueda
   const { addToCart } = useCart();
 
   /**
-   * FIX 2: Función para transformar un array plano de productos
+   * Función para transformar un array plano de productos
    * en un objeto agrupado por 'nombreCategoria'.
-   *
-   * Entrada: [{ nombreCategoria: 'Bebidas', ... }, { nombreCategoria: 'Comidas', ... }]
-   * Salida:  { 'Bebidas': [{...}], 'Comidas': [{...}] }
    */
   const agruparProductosPorCategoria = (productos) => {
     return productos.reduce((acc, producto) => {
@@ -86,13 +81,38 @@ const ProductosScreen = () => {
     }, {});
   };
 
+  /**
+   * Función para filtrar productos según el término de búsqueda
+   */
+  const filtrarProductos = (productosAgrupados, termino) => {
+    if (!termino.trim()) {
+      return productosAgrupados; // Sin filtro, devolver todo
+    }
+
+    const terminoLower = termino.toLowerCase();
+    const productosFiltrados = {};
+
+    Object.entries(productosAgrupados).forEach(([categoria, productos]) => {
+      const productosDeLaCategoria = productos.filter((producto) =>
+        producto.nombreProducto.toLowerCase().includes(terminoLower) ||
+        (producto.descripcion && producto.descripcion.toLowerCase().includes(terminoLower))
+      );
+
+      // Solo agregar la categoría si tiene productos que coincidan
+      if (productosDeLaCategoria.length > 0) {
+        productosFiltrados[categoria] = productosDeLaCategoria;
+      }
+    });
+
+    return productosFiltrados;
+  };
+
   useEffect(() => {
     const cargarProductos = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        // FIX 1: Petición GET simple sin encabezados de autenticación.
         const response = await fetch("/api/Productos");
 
         if (!response.ok) {
@@ -118,8 +138,10 @@ const ProductosScreen = () => {
     };
 
     cargarProductos();
-    // El array vacío [] asegura que este efecto se ejecute solo una vez al montar el componente.
   }, []);
+
+  // Aplicar el filtro de búsqueda
+  const productosFiltrados = filtrarProductos(productosAgrupados, searchTerm);
 
   // --- Renderizado Condicional ---
 
@@ -138,7 +160,7 @@ const ProductosScreen = () => {
     return (
       <div className="productos-screen">
         <div className="main-container">
-          <Header />
+          <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <div className="error-container">
             <h3>❌ Error al cargar productos</h3>
             <p>
@@ -164,19 +186,21 @@ const ProductosScreen = () => {
     <div className="productos-screen">
       <div className="main-container">
         <div className="header-seccion">
-          <Header />
+          <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <h1 className="titulo-principal">MENÚ</h1>
         </div>
 
-        {Object.keys(productosAgrupados).length === 0 ? (
+        {Object.keys(productosFiltrados).length === 0 ? (
           <div className="sin-productos">
-            <h3>🍽️ No se encontraron productos</h3>
+            <h3>🔍 {searchTerm ? "No se encontraron resultados" : "No hay productos disponibles"}</h3>
             <p>
-              Parece que no hay nada en el menú por ahora. Vuelve a intentarlo.
+              {searchTerm 
+                ? `No se encontraron productos que coincidan con "${searchTerm}".`
+                : "Parece que no hay nada en el menú por ahora."}
             </p>
           </div>
         ) : (
-          Object.entries(productosAgrupados).map(([categoria, productos]) => (
+          Object.entries(productosFiltrados).map(([categoria, productos]) => (
             <CategoriaSeccion
               key={categoria}
               categoria={categoria}

@@ -125,9 +125,9 @@ const Checkout = () => {
                 withCredentials: true
             });
             console.log('Pedido enviado con éxito:', response.data);
-            alert('¡Tu pedido ha sido realizado con éxito!');
+            alert('¡Tu pedido se ha enviado a la cafetería, por favor espera la confirmación!');
             clearCart();
-            navigate('/status');
+            navigate('/productos');
         } catch (error) {
             console.error('Error al enviar el pedido:', error);
             //alert('Hubo un error al procesar tu pedido. Inténtalo de nuevo.');
@@ -180,7 +180,6 @@ const Checkout = () => {
         <div className="checkout-container">
             {/* <button><i class="bi bi-arrow-left-circle"></i></button> */}
             <h2 className="checkout-title">Resumen del Pedido</h2>
-
             {cart.length === 0 ? (
                 <p className="checkout-empty-message">No hay productos en tu carrito. Agrega algo para realizar un pedido.</p>
             ) : (

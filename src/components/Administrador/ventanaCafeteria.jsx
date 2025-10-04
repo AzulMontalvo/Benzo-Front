@@ -3,7 +3,7 @@ import axios from "axios";
 import "../../css/cafeteria.css";
 
 const VistaCafeteria = () => {
-  const [estadoActivo, setEstadoActivo] = useState("ENT"); // Cambiado de "REALIZADO" a "ENT"
+  const [estadoActivo, setEstadoActivo] = useState("SOLI"); // Cambiado de "REALIZADO" a "ENT"
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,7 +14,7 @@ const VistaCafeteria = () => {
 
   // Configurar axios para incluir el token en todas las peticiones
   const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     
     console.log("🔑 Token guardado:", token ? "Sí existe" : "❌ NO EXISTE");
     
@@ -60,7 +60,7 @@ const VistaCafeteria = () => {
         setPedidos(response.data);
       } catch (err) {
         console.error(" Error al cargar pedidos:", err);
-        console.error(" URL intentada:", `${API_BASE_URL}/estadosfiltrados?claveEstado=${estadoActivo}`);
+        console.error(" URL intentada:", `${API_BASE_URL}/estadosfiltrados?estado=${estadoActivo}`);
         console.error(" Respuesta del servidor:", err.response?.data);
         console.error(" Código de estado:", err.response?.status);
         console.error(" Detalles del error:", err.response?.data?.errors);
@@ -259,3 +259,5 @@ const VistaCafeteria = () => {
 };
 
 export default VistaCafeteria;
+
+//////

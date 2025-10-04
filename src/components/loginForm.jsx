@@ -59,9 +59,9 @@ const Login = () => {
 
             // 🔹 Redirigir según rol
             if (rol === "Administrador") {
-                navigate("/admin", { replace: true });
-            } else if (rol === "Empleado") {
                 navigate("/admin-panel", { replace: true });
+            } else if (rol === "Empleado") {
+                navigate("/cafeteria", { replace: true });
             } else {
                 navigate("/productos", { replace: true }); // Cliente u otro rol
             }

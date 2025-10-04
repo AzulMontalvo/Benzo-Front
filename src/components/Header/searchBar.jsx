@@ -1,4 +1,4 @@
-
+//SearchBar.jsx
 const SearchBar = ({searchTerm, setSearchTerm}) => {
 
   const handleSearchChange = (e) => {
@@ -23,3 +23,6 @@ const SearchBar = ({searchTerm, setSearchTerm}) => {
 };
 
 export default SearchBar;
+
+
+//////
